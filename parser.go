@@ -30,17 +30,26 @@ func ParseDoc(inp []byte) []Request {
 }
 
 var (
-	RegURLParam = regexp.MustCompile(`\{.+#.+?\}`)
+	RegURLParam = regexp.MustCompile(`\{([A-z]|\.)+?#.+?\}`)
 )
 
 var URLParamMap = map[string]string{
 	"channel.id": "channel",
 	"guild.id": "guild",
 	"user.id": "user",
+	"message.id": "message",
 	"webhook.id": "webhook",
 	"template.code": "guildTemplate",
 	"invite.code": "invite",
 	"sticker.id": "sticker",
+	// Use the full referance here because there is emoji.id, which is diff 
+	"emoji#DOCS_RESOURCES_EMOJI/emoji-object": "emojiRawCharacter",
+	"overwrite.id": "overwrite",
+	"emoji.id": "emojiID",
+	"role.id": "role",
+	"integration.id": "integration",
+	"guild_scheduled_event.id": "guildSchEvent",
+	"webhook.token": "webhookToken",
 }
 
 func ParseTitle(headingLine []byte) Request {
@@ -60,6 +69,7 @@ func ParseTitle(headingLine []byte) Request {
 		loc := RegURLParam.FindStringIndex(urlRaw)
 		
 		paramRaw := urlRaw[loc[0]:loc[1]]
+		
 		paramFound := false
 
 		
